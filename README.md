@@ -2,20 +2,15 @@
 
 ![.github/workflows/verify.yml](https://github.com/movableink/ember-data-json-api-bulk-ext/workflows/.github/workflows/verify.yml/badge.svg)
 
-==============================================================================
-
 Decorator to add support to Ember Data for the [JSON:API Bulk Extension](https://github.com/json-api/json-api/blob/9c7a03dbc37f80f6ca81b16d444c960e96dd7a57/extensions/bulk/index.md).
 
-Compatibility
-------------------------------------------------------------------------------
+## Compatibility
 
-* Ember.js v3.12 or above
-* Ember CLI v2.13 or above
-* Node.js v10 or above
+- Ember.js v3.12 or above
+- Ember CLI v2.13 or above
+- Node.js v10 or above
 
-
-Installation
-------------------------------------------------------------------------------
+## Installation
 
 ```
 ember install ember-data-json-api-bulk-ext
@@ -32,8 +27,7 @@ import { withBulkActions } from 'ember-data-json-api-bulk-ext';
 export default class CustomStore extends Store {}
 ```
 
-Usage
-------------------------------------------------------------------------------
+## Usage
 
 With the decorator applied to your Store subclass, you'll have new methods on the store available to you for dealing with bulk API actions.
 
@@ -49,17 +43,14 @@ assert.ok(second.id, 'First record was given an ID');
 
 Note the following limitations:
 
-* The models being operated on _must_ use the `JSONAPIAdapter` and `JSONAPISerializer`
-* All records must be of the same type (for now)
-* Records can only be created in bulk (for now)
+- The models being operated on _must_ use the `JSONAPIAdapter` and `JSONAPISerializer`
+- All records must be of the same type (for now)
+- Records can only be created in bulk (for now)
 
-Contributing
-------------------------------------------------------------------------------
+## Contributing
 
 See the [Contributing](CONTRIBUTING.md) guide for details.
 
-
-License
-------------------------------------------------------------------------------
+## License
 
 This project is licensed under the [MIT License](LICENSE.md).
