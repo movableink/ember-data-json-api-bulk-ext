@@ -9,3 +9,16 @@ export const payload = td.matchers.create({
     return isEqual(payload, body);
   }
 });
+
+export const headers = td.matchers.create({
+  name: 'headers',
+  matches([headerObject], { requestHeaders }) {
+    const normalizedHeaderObject = {};
+
+    for (const key in headerObject) {
+      normalizedHeaderObject[key.toLowerCase()] = headerObject[key];
+    }
+
+    return isEqual(normalizedHeaderObject, requestHeaders);
+  }
+});
