@@ -1,10 +1,10 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import td from 'testdouble';
-import setupPretender from '../../helpers/setup-pretender';
-import { payload as payloadMatches } from '../../matchers/pretender';
+import setupPretender from '../helpers/setup-pretender';
+import { payload as payloadMatches } from '../matchers/pretender';
 
-module('Unit | Service | store', function(hooks) {
+module('Unit | withBulkActions', function(hooks) {
   setupTest(hooks);
   setupPretender(hooks);
 
