@@ -23,8 +23,10 @@ If you have not yet created a subclass of the Ember Data Store, do so now. You w
 import Store from '@ember-data/store';
 import { withBulkActions } from 'ember-data-json-api-bulk-ext';
 
-@withBulkActions
-export default class CustomStore extends Store {}
+@withBulkActions()
+class CustomStore extends Store {}
+
+export default CustomStore;
 ```
 
 ## Usage
@@ -46,6 +48,15 @@ Note the following limitations:
 - The models being operated on _must_ use the `JSONAPIAdapter` and `JSONAPISerializer`
 - All records must be of the same type (for now)
 - Records can only be created in bulk (for now)
+
+### Using the extension MIME type
+
+The bulk extension for JSON:API describes a custom MIME type for your requests. To override the default JSON:API MIME type and use the one from the extension, pass the following option to the `withBulkActions` decorator:
+
+```javascript
+@withBulkActions({ useExtensionMimeType: true })
+class CustomStore extends Store {
+```
 
 ## Contributing
 
