@@ -1,39 +1,17 @@
 on: [push]
 
 jobs:
-  install:
+  lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - uses: volta-cli/action@v1
-    - name: Cache Dependencies
-      uses: actions/cache@v1
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
     - name: Install Dependencies
       run: yarn install
-
-  lint:
-    needs: install
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: volta-cli/action@v1
-    - name: Cache Dependencies
-      uses: actions/cache@v1
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
     - name: Run ESLint
       run: yarn lint:js -f tap
 
   test:
-    needs: install
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -41,13 +19,8 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - uses: volta-cli/action@v1
-    - name: Cache Dependencies
-      uses: actions/cache@v1
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+    - name: Install Dependencies
+      run: yarn install
     - name: Run Tests
       run: yarn ember try:one ${{ matrix.ember-try-scenario }}
       env:
