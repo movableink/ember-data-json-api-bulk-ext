@@ -64,9 +64,16 @@ jobs:
           ${{ runner.os }}-yarn-
     - name: Install Dependencies
       run: yarn install
-    - name: Run Tests
-      run: yarn ember try:one ${{ matrix.ember-try-scenario }} --skip-cleanup=true
+    - name: Build Scenario
+      run: yarn ember try:one ${{ matrix.ember-try-scenario }} --skip-cleanup=true --- ember build --environment=test
       env:
         CI: true
-
-
+    - name: Store Build Artifact for Debugging
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ matrix.ember-try-scenario }}-dist
+        path: ./dist
+    - name: Run Tests
+      run: yarn ember test --path ./dist
+      env:
+        CI: true
