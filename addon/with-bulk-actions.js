@@ -1,6 +1,8 @@
+import Store from '@ember-data/store';
 import { assert } from '@ember/debug';
+import { MIME_TYPE } from './constants';
 
-export function withBulkActions(StoreClass) {
+function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
   return class StoreWithBulkActions extends StoreClass {
     async bulkCreate(records) {
       assert(
@@ -27,7 +29,16 @@ export function withBulkActions(StoreClass) {
         record._internalModel.adapterWillCommit();
       });
 
-      const response = await adapter.ajax(url, 'POST', { data: payload });
+      const requestOptions = useExtensionMimeType
+        ? {
+            headers: {
+              Accept: MIME_TYPE
+            },
+            contentType: MIME_TYPE
+          }
+        : {};
+
+      const response = await adapter.ajax(url, 'POST', { data: payload, ...requestOptions });
       const responseData = response.data;
 
       records.forEach((record, index) => {
@@ -38,5 +49,21 @@ export function withBulkActions(StoreClass) {
 
       return records;
     }
+  };
+}
+
+export function withBulkActions(arg) {
+  // Decorator is not called as a function
+  if (arg && arg.prototype instanceof Store) {
+    return extendStore(arg);
+  }
+
+  return function(StoreClass) {
+    assert(
+      'Decorator must be applied to the Ember Data Store',
+      StoreClass.prototype instanceof Store
+    );
+
+    return extendStore(StoreClass, arg);
   };
 }
