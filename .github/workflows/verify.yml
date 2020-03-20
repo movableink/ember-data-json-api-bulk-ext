@@ -23,9 +23,6 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ember-try-scenario: [ember-default, ember-lts-3.12, ember-lts-3.16, ember-release, ember-beta, ember-canary, ember-classic]
     steps:
     - uses: actions/checkout@v1
     - uses: volta-cli/action@v1
@@ -42,7 +39,33 @@ jobs:
     - name: Install Dependencies
       run: yarn install
     - name: Run Tests
-      run: yarn ember try:one ${{ matrix.ember-try-scenario }}
+      run: yarn test
+      env:
+        CI: true
+
+  ember-try:
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ember-try-scenario: [ember-lts-3.12, ember-lts-3.16, ember-release, ember-beta, ember-canary]
+    steps:
+    - uses: actions/checkout@v1
+    - uses: volta-cli/action@v1
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - uses: actions/cache@v1
+      id: yarn-cache
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+    - name: Install Dependencies
+      run: yarn install
+    - name: Run Tests
+      run: yarn ember try:one ${{ matrix.ember-try-scenario }} --skip-cleanup=true
       env:
         CI: true
 
