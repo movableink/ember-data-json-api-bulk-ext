@@ -31,6 +31,24 @@ function getModelName(records) {
 
 function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
   return class StoreWithBulkActions extends StoreClass {
+    async bulkSave(records, options) {
+      const toCreate = records.filter(record => record.isNew);
+      const toDelete = records.filter(record => record.isDeleted);
+      const operations = [];
+
+      if (toCreate.length) {
+        operations.push(this.bulkCreate(toCreate, options));
+      }
+
+      if (toDelete.length) {
+        operations.push(this.bulkDelete(toDelete, options));
+      }
+
+      await Promise.all(operations);
+
+      return records;
+    }
+
     async bulkCreate(records, { adapterOptions = {} } = {}) {
       assert(
         'All records must be new',
