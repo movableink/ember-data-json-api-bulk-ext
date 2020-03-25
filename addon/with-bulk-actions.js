@@ -4,7 +4,7 @@ import { MIME_TYPE } from './constants';
 
 function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
   return class StoreWithBulkActions extends StoreClass {
-    async bulkCreate(records) {
+    async bulkCreate(records, { adapterOptions = {} } = {}) {
       assert(
         'All records must be new',
         records.every(record => record.isNew)
@@ -29,14 +29,17 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
         record._internalModel.adapterWillCommit();
       });
 
+      const { headers: customHeaders, ...otherAdapterOptions } = adapterOptions;
       const requestOptions = useExtensionMimeType
         ? {
             headers: {
-              Accept: MIME_TYPE
+              Accept: MIME_TYPE,
+              ...customHeaders
             },
-            contentType: MIME_TYPE
+            contentType: MIME_TYPE,
+            ...otherAdapterOptions
           }
-        : {};
+        : adapterOptions;
 
       const response = await adapter.ajax(url, 'POST', { data: payload, ...requestOptions });
       const responseData = response.data;

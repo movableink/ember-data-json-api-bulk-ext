@@ -64,6 +64,34 @@ module('Unit | withBulkActions', function(hooks) {
 
         assert.equal(record.id, 1, 'Creation was preformed successfully');
       });
+
+      test('merging with other custom headers', async function(assert) {
+        td.when(
+          this.postsHandler(
+            headersMatch({ Accept: MIME_TYPE, 'Content-Type': MIME_TYPE, Foo: 'Bar' })
+          )
+        ).thenReturn([
+          201,
+          {},
+          JSON.stringify({
+            data: [
+              {
+                type: 'posts',
+                id: 1,
+                attributes: {
+                  title: 'My Post'
+                }
+              }
+            ]
+          })
+        ]);
+
+        const record = this.store.createRecord('post', { title: 'My Post' });
+
+        await this.store.bulkCreate([record], { adapterOptions: { headers: { Foo: 'Bar' } } });
+
+        assert.equal(record.id, 1, 'Creation was preformed successfully');
+      });
     });
 
     module('when disabled', function(hooks) {
@@ -100,6 +128,38 @@ module('Unit | withBulkActions', function(hooks) {
 
         assert.equal(record.id, 1, 'Creation was preformed successfully');
       });
+    });
+  });
+
+  module('overriding adapter options', function(hooks) {
+    setupStore(hooks, StoreWithHeaderOptions);
+    setupPretender(hooks);
+
+    test('it allows overriding the default URL', async function(assert) {
+      const handler = td.function();
+      this.server.post('/override-url', handler);
+
+      td.when(handler(td.matchers.anything())).thenReturn([
+        201,
+        {},
+        JSON.stringify({
+          data: [
+            {
+              type: 'posts',
+              id: 1,
+              attributes: {
+                title: 'My Post'
+              }
+            }
+          ]
+        })
+      ]);
+
+      const record = this.store.createRecord('post', { title: 'My Post' });
+
+      await this.store.bulkCreate([record], { adapterOptions: { url: '/override-url' } });
+
+      assert.equal(record.id, 1, 'Creation was preformed successfully');
     });
   });
 
