@@ -10,7 +10,7 @@ import { payload as payloadMatches } from '../../matchers/pretender';
 class StoreWithoutHeaderOptions extends Store {}
 
 function setupStore(hooks) {
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.owner.unregister('service:store');
     this.owner.register('service:store', StoreWithoutHeaderOptions);
 
@@ -24,26 +24,26 @@ function setupStore(hooks) {
 function setupDeleteHandler(hooks) {
   setupPretender(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.deleteHandler = td.function();
     this.server.delete('/posts', this.deleteHandler);
   });
 }
 
-module('Unit | withBulkActions | bulkDelete', function(hooks) {
+module('Unit | withBulkActions | bulkDelete', function (hooks) {
   setupTest(hooks);
   setupStore(hooks);
   setupDeleteHandler(hooks);
 
-  test('it allows an empty array to be passed', async function(assert) {
+  test('it allows an empty array to be passed', async function (assert) {
     assert.deepEqual(await this.store.bulkDelete([]), [], 'Allows an empty array');
   });
 
-  test('deleting multiple records', async function(assert) {
+  test('deleting multiple records', async function (assert) {
     td.when(
       this.deleteHandler(
         payloadMatches({
-          data: [{ type: 'posts', id: '1' }]
+          data: [{ type: 'posts', id: '1' }],
         })
       )
     ).thenReturn([204, {}, '']);

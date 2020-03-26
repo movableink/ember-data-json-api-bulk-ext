@@ -14,7 +14,7 @@ class StoreWithoutHeaderOptions extends Store {}
 class StoreWithHeaderOptions extends Store {}
 
 function setupStore(hooks, StoreClass = StoreWithoutHeaderOptions) {
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.owner.unregister('service:store');
     this.owner.register('service:store', StoreClass);
 
@@ -25,21 +25,21 @@ function setupStore(hooks, StoreClass = StoreWithoutHeaderOptions) {
 function setupPostHandler(hooks) {
   setupPretender(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.postsHandler = td.function();
     this.server.post('/posts', this.postsHandler);
   });
 }
 
-module('Unit | withBulkActions', function(hooks) {
+module('Unit | withBulkActions', function (hooks) {
   setupTest(hooks);
 
-  module('mime type options', function() {
-    module('when enabled', function(hooks) {
+  module('mime type options', function () {
+    module('when enabled', function (hooks) {
       setupStore(hooks, StoreWithHeaderOptions);
       setupPostHandler(hooks);
 
-      test('it sends the headers to the API', async function(assert) {
+      test('it sends the headers to the API', async function (assert) {
         td.when(
           this.postsHandler(headersMatch({ Accept: MIME_TYPE, 'Content-Type': MIME_TYPE }))
         ).thenReturn([
@@ -51,11 +51,11 @@ module('Unit | withBulkActions', function(hooks) {
                 type: 'posts',
                 id: 1,
                 attributes: {
-                  title: 'My Post'
-                }
-              }
-            ]
-          })
+                  title: 'My Post',
+                },
+              },
+            ],
+          }),
         ]);
 
         const record = this.store.createRecord('post', { title: 'My Post' });
@@ -65,7 +65,7 @@ module('Unit | withBulkActions', function(hooks) {
         assert.equal(record.id, 1, 'Creation was preformed successfully');
       });
 
-      test('merging with other custom headers', async function(assert) {
+      test('merging with other custom headers', async function (assert) {
         td.when(
           this.postsHandler(
             headersMatch({ Accept: MIME_TYPE, 'Content-Type': MIME_TYPE, Foo: 'Bar' })
@@ -79,11 +79,11 @@ module('Unit | withBulkActions', function(hooks) {
                 type: 'posts',
                 id: 1,
                 attributes: {
-                  title: 'My Post'
-                }
-              }
-            ]
-          })
+                  title: 'My Post',
+                },
+              },
+            ],
+          }),
         ]);
 
         const record = this.store.createRecord('post', { title: 'My Post' });
@@ -94,16 +94,16 @@ module('Unit | withBulkActions', function(hooks) {
       });
     });
 
-    module('when disabled', function(hooks) {
+    module('when disabled', function (hooks) {
       setupStore(hooks, StoreWithoutHeaderOptions);
       setupPostHandler(hooks);
 
-      test('it does not send the headers to the API', async function(assert) {
+      test('it does not send the headers to the API', async function (assert) {
         td.when(
           this.postsHandler(
             headersMatch({
               Accept: 'application/vnd.api+json',
-              'Content-Type': 'application/vnd.api+json'
+              'Content-Type': 'application/vnd.api+json',
             })
           )
         ).thenReturn([
@@ -115,11 +115,11 @@ module('Unit | withBulkActions', function(hooks) {
                 type: 'posts',
                 id: 1,
                 attributes: {
-                  title: 'My Post'
-                }
-              }
-            ]
-          })
+                  title: 'My Post',
+                },
+              },
+            ],
+          }),
         ]);
 
         const record = this.store.createRecord('post', { title: 'My Post' });
@@ -131,11 +131,11 @@ module('Unit | withBulkActions', function(hooks) {
     });
   });
 
-  module('overriding adapter options', function(hooks) {
+  module('overriding adapter options', function (hooks) {
     setupStore(hooks, StoreWithHeaderOptions);
     setupPretender(hooks);
 
-    test('it allows overriding the default URL', async function(assert) {
+    test('it allows overriding the default URL', async function (assert) {
       const handler = td.function();
       this.server.post('/override-url', handler);
 
@@ -148,11 +148,11 @@ module('Unit | withBulkActions', function(hooks) {
               type: 'posts',
               id: 1,
               attributes: {
-                title: 'My Post'
-              }
-            }
-          ]
-        })
+                title: 'My Post',
+              },
+            },
+          ],
+        }),
       ]);
 
       const record = this.store.createRecord('post', { title: 'My Post' });
@@ -163,21 +163,21 @@ module('Unit | withBulkActions', function(hooks) {
     });
   });
 
-  module('using the decorator without calling it as a function', function(hooks) {
+  module('using the decorator without calling it as a function', function (hooks) {
     @withBulkActions
     class CustomStore extends Store {}
 
     setupStore(hooks, CustomStore);
 
-    test('the additional methods are injected into the store', function(assert) {
+    test('the additional methods are injected into the store', function (assert) {
       assert.ok(this.store.bulkCreate, 'The extension was applied successfully');
     });
   });
 
-  module('validating the class the decorator is applied to', function() {
-    test('does not work when applied to a non-Ember Data Store class', function(assert) {
+  module('validating the class the decorator is applied to', function () {
+    test('does not work when applied to a non-Ember Data Store class', function (assert) {
       assert.throws(
-        function() {
+        function () {
           @withBulkActions()
           class FooBar {} // eslint-disable-line no-unused-vars
         },
@@ -186,7 +186,7 @@ module('Unit | withBulkActions', function(hooks) {
       );
     });
 
-    test('works with a subclass of the Ember Data Store', function(assert) {
+    test('works with a subclass of the Ember Data Store', function (assert) {
       class StoreSubclass extends Store {}
 
       @withBulkActions()

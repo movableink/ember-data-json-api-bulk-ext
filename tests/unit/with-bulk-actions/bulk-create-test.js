@@ -10,7 +10,7 @@ import { payload as payloadMatches } from '../../matchers/pretender';
 class StoreWithoutHeaderOptions extends Store {}
 
 function setupStore(hooks) {
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.owner.unregister('service:store');
     this.owner.register('service:store', StoreWithoutHeaderOptions);
 
@@ -21,22 +21,22 @@ function setupStore(hooks) {
 function setupPostHandler(hooks) {
   setupPretender(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.postsHandler = td.function();
     this.server.post('/posts', this.postsHandler);
   });
 }
 
-module('Unit | withBulkActions | bulkCreate', function(hooks) {
+module('Unit | withBulkActions | bulkCreate', function (hooks) {
   setupTest(hooks);
   setupStore(hooks);
   setupPostHandler(hooks);
 
-  test('it allows an empty array to be passed', async function(assert) {
+  test('it allows an empty array to be passed', async function (assert) {
     assert.deepEqual(await this.store.bulkDelete([]), [], 'Allows an empty array');
   });
 
-  test('it does not interfere with normal creation', async function(assert) {
+  test('it does not interfere with normal creation', async function (assert) {
     td.when(
       this.postsHandler(
         payloadMatches({ data: { type: 'posts', attributes: { title: 'First Post' } } })
@@ -49,10 +49,10 @@ module('Unit | withBulkActions | bulkCreate', function(hooks) {
           type: 'posts',
           id: 1,
           attributes: {
-            title: 'First Post'
-          }
-        }
-      })
+            title: 'First Post',
+          },
+        },
+      }),
     ]);
 
     const first = this.store.createRecord('post', { title: 'First Post' });
@@ -62,14 +62,14 @@ module('Unit | withBulkActions | bulkCreate', function(hooks) {
     assert.equal(first.id, 1, 'Recieved an ID from the API');
   });
 
-  test('it can create multiple models at once', async function(assert) {
+  test('it can create multiple models at once', async function (assert) {
     td.when(
       this.postsHandler(
         payloadMatches({
           data: [
             { type: 'posts', attributes: { title: 'First Post' } },
-            { type: 'posts', attributes: { title: 'Second Post' } }
-          ]
+            { type: 'posts', attributes: { title: 'Second Post' } },
+          ],
         })
       )
     ).thenReturn([
@@ -81,18 +81,18 @@ module('Unit | withBulkActions | bulkCreate', function(hooks) {
             type: 'posts',
             id: 1,
             attributes: {
-              title: 'First Post'
-            }
+              title: 'First Post',
+            },
           },
           {
             type: 'posts',
             id: 2,
             attributes: {
-              title: 'Second Post'
-            }
-          }
-        ]
-      })
+              title: 'Second Post',
+            },
+          },
+        ],
+      }),
     ]);
 
     const first = this.store.createRecord('post', { title: 'First Post' });

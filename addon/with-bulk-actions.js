@@ -6,7 +6,7 @@ import { MIME_TYPE } from './constants';
 function validateRecordTypesMatch(serializedRecords) {
   assert(
     'All records must be the same type',
-    serializedRecords.every(record => record.type === serializedRecords[0].type)
+    serializedRecords.every((record) => record.type === serializedRecords[0].type)
   );
 }
 
@@ -16,10 +16,10 @@ function buildAjaxOptions(adapterOptions, useExtensionMimeType) {
     ? {
         headers: {
           Accept: MIME_TYPE,
-          ...customHeaders
+          ...customHeaders,
         },
         contentType: MIME_TYPE,
-        ...otherAdapterOptions
+        ...otherAdapterOptions,
       }
     : adapterOptions;
 }
@@ -33,8 +33,8 @@ function getModelName(records) {
 function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
   return class StoreWithBulkActions extends StoreClass {
     async bulkSave(records, options) {
-      const toCreate = records.filter(record => record.isNew);
-      const toDelete = records.filter(record => record.isDeleted);
+      const toCreate = records.filter((record) => record.isNew);
+      const toDelete = records.filter((record) => record.isDeleted);
       const operations = [];
 
       if (toCreate.length) {
@@ -57,12 +57,12 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
 
       assert(
         'All records must be new',
-        records.every(record => record.isNew)
+        records.every((record) => record.isNew)
       );
 
       const serializedRecords = records
-        .map(record => record.serialize())
-        .map(payload => payload.data);
+        .map((record) => record.serialize())
+        .map((payload) => payload.data);
 
       validateRecordTypesMatch(serializedRecords);
 
@@ -71,16 +71,16 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
 
       const url = adapter.urlForCreateRecord(modelName);
       const payload = {
-        data: serializedRecords
+        data: serializedRecords,
       };
 
-      records.forEach(record => {
+      records.forEach((record) => {
         record._internalModel.adapterWillCommit();
       });
 
       const response = await adapter.ajax(url, 'POST', {
         data: payload,
-        ...buildAjaxOptions(adapterOptions, useExtensionMimeType)
+        ...buildAjaxOptions(adapterOptions, useExtensionMimeType),
       });
       const responseData = response.data;
 
@@ -94,7 +94,7 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
     }
 
     async bulkDestroy(records, options) {
-      records.forEach(record => {
+      records.forEach((record) => {
         record.deleteRecord();
       });
 
@@ -108,13 +108,13 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
 
       assert(
         'All records must be deleted',
-        records.every(record => record.isDeleted)
+        records.every((record) => record.isDeleted)
       );
 
       const serializedRecords = records
-        .map(record => record.serialize({ includeId: true }))
-        .map(payload => payload.data)
-        .map(record => {
+        .map((record) => record.serialize({ includeId: true }))
+        .map((payload) => payload.data)
+        .map((record) => {
           delete record.attributes;
 
           return record;
@@ -127,19 +127,19 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
 
       const url = adapter.urlForCreateRecord(modelName);
       const payload = {
-        data: serializedRecords
+        data: serializedRecords,
       };
 
-      records.forEach(record => {
+      records.forEach((record) => {
         record._internalModel.adapterWillCommit();
       });
 
       await adapter.ajax(url, 'DELETE', {
         data: payload,
-        ...buildAjaxOptions(adapterOptions, useExtensionMimeType)
+        ...buildAjaxOptions(adapterOptions, useExtensionMimeType),
       });
 
-      records.forEach(record => {
+      records.forEach((record) => {
         this.didSaveRecord(record._internalModel, { data: undefined }, 'deleteRecord');
       });
 
@@ -154,7 +154,7 @@ export function withBulkActions(arg) {
     return extendStore(arg);
   }
 
-  return function(StoreClass) {
+  return function (StoreClass) {
     assert(
       'Decorator must be applied to the Ember Data Store',
       StoreClass.prototype instanceof Store
