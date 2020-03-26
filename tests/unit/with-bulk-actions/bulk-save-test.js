@@ -8,7 +8,7 @@ import { withBulkActions } from 'ember-data-json-api-bulk-ext';
 class StoreWithoutHeaderOptions extends Store {}
 
 function setupStore(hooks) {
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.owner.unregister('service:store');
     this.owner.register('service:store', StoreWithoutHeaderOptions);
 
@@ -16,11 +16,11 @@ function setupStore(hooks) {
   });
 }
 
-module('Unit | withBulkActions | bulkSave', function(hooks) {
+module('Unit | withBulkActions | bulkSave', function (hooks) {
   setupTest(hooks);
   setupStore(hooks);
 
-  test('it can save and delete records', async function(assert) {
+  test('it can save and delete records', async function (assert) {
     td.replace(this.store, 'bulkCreate');
     td.replace(this.store, 'bulkDelete');
 

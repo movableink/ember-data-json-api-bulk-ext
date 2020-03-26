@@ -11,12 +11,12 @@ export const payload = td.matchers.create({
     const body = typeof requestBody === 'string' ? JSON.parse(requestBody) : requestBody;
 
     return isEqual(payload, body);
-  }
+  },
 });
 
 export const headers = td.matchers.create({
   name: 'headers',
   matches([headers], { requestHeaders }) {
     return isEqual(normalizedHeaders(headers), normalizedHeaders(requestHeaders));
-  }
+  },
 });

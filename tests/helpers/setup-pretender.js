@@ -1,11 +1,11 @@
 import Pretender from 'pretender';
 
 export default function setupPretender(hooks) {
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.server = new Pretender();
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     this.server.shutdown();
   });
 }
