@@ -1,4 +1,5 @@
 import Store from '@ember-data/store';
+import { isEmpty } from '@ember/utils';
 import { assert } from '@ember/debug';
 import { MIME_TYPE } from './constants';
 
@@ -50,6 +51,10 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
     }
 
     async bulkCreate(records, { adapterOptions = {} } = {}) {
+      if (isEmpty(records)) {
+        return [];
+      }
+
       assert(
         'All records must be new',
         records.every(record => record.isNew)
@@ -97,6 +102,10 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
     }
 
     async bulkDelete(records, { adapterOptions = {} } = {}) {
+      if (isEmpty(records)) {
+        return [];
+      }
+
       assert(
         'All records must be deleted',
         records.every(record => record.isDeleted)

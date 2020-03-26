@@ -35,6 +35,10 @@ module('Unit | withBulkActions | bulkDelete', function(hooks) {
   setupStore(hooks);
   setupDeleteHandler(hooks);
 
+  test('it allows an empty array to be passed', async function(assert) {
+    assert.deepEqual(await this.store.bulkDelete([]), [], 'Allows an empty array');
+  });
+
   test('deleting multiple records', async function(assert) {
     td.when(
       this.deleteHandler(
