@@ -32,6 +32,10 @@ module('Unit | withBulkActions | bulkCreate', function(hooks) {
   setupStore(hooks);
   setupPostHandler(hooks);
 
+  test('it allows an empty array to be passed', async function(assert) {
+    assert.deepEqual(await this.store.bulkDelete([]), [], 'Allows an empty array');
+  });
+
   test('it does not interfere with normal creation', async function(assert) {
     td.when(
       this.postsHandler(
