@@ -44,7 +44,7 @@ jobs:
         CI: true
 
   ember-try:
-    needs: test
+    needs: [lint, test]
     runs-on: ubuntu-latest
     strategy:
       matrix:
