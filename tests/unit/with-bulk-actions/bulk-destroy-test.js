@@ -3,8 +3,6 @@ import { setupTest } from 'ember-qunit';
 import td from 'testdouble';
 import Store from '@ember-data/store';
 import { withBulkActions } from 'ember-data-json-api-bulk-ext';
-import setupPretender from '../../helpers/setup-pretender';
-import { payload as payloadMatches } from '../../matchers/pretender';
 
 @withBulkActions()
 class StoreWithoutHeaderOptions extends Store {}
@@ -21,31 +19,17 @@ function setupStore(hooks) {
   });
 }
 
-function setupDeleteHandler(hooks) {
-  setupPretender(hooks);
-
-  hooks.beforeEach(function () {
-    this.deleteHandler = td.function();
-    this.server.delete('/posts', this.deleteHandler);
-  });
-}
-
 module('Unit | withBulkActions | bulkDestroy', function (hooks) {
   setupTest(hooks);
   setupStore(hooks);
-  setupDeleteHandler(hooks);
 
   test('deleting multiple records', async function (assert) {
-    td.when(
-      this.deleteHandler(
-        payloadMatches({
-          data: [{ type: 'posts', id: '1' }],
-        })
-      )
-    ).thenReturn([204, {}, '']);
+    td.replace(this.store, 'bulkDelete');
+    const options = {};
 
-    await this.store.bulkDestroy([this.post]);
+    await this.store.bulkDestroy([this.post], options);
 
     assert.ok(this.post.isDeleted, 'Marked the post as deleted');
+    assert.verify(this.store.bulkDelete([this.post], options), 'Called `bulkDestroy` internally');
   });
 });

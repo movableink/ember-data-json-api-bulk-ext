@@ -1,34 +1,12 @@
 import Store from '@ember-data/store';
 import { isEmpty } from '@ember/utils';
 import { assert } from '@ember/debug';
-import { MIME_TYPE } from './constants';
-
-function validateRecordTypesMatch(serializedRecords) {
-  assert(
-    'All records must be the same type',
-    serializedRecords.every((record) => record.type === serializedRecords[0].type)
-  );
-}
-
-function buildAjaxOptions(adapterOptions, useExtensionMimeType) {
-  const { headers: customHeaders, ...otherAdapterOptions } = adapterOptions;
-  return useExtensionMimeType
-    ? {
-        headers: {
-          Accept: MIME_TYPE,
-          ...customHeaders,
-        },
-        contentType: MIME_TYPE,
-        ...otherAdapterOptions,
-      }
-    : adapterOptions;
-}
-
-function getModelName(records) {
-  const { modelName } = records[0]._internalModel.createSnapshot();
-
-  return modelName;
-}
+import {
+  buildAjaxOptions,
+  getModelName,
+  serializeRecords as serialize,
+  validateRecordTypesMatch,
+} from './utils';
 
 function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
   return class StoreWithBulkActions extends StoreClass {
@@ -60,9 +38,7 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
         records.every((record) => record.isNew)
       );
 
-      const serializedRecords = records
-        .map((record) => record.serialize())
-        .map((payload) => payload.data);
+      const serializedRecords = serialize(records);
 
       validateRecordTypesMatch(serializedRecords);
 
@@ -70,16 +46,13 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
       const adapter = this.adapterFor(modelName);
 
       const url = adapter.urlForCreateRecord(modelName);
-      const payload = {
-        data: serializedRecords,
-      };
 
       records.forEach((record) => {
         record._internalModel.adapterWillCommit();
       });
 
       const response = await adapter.ajax(url, 'POST', {
-        data: payload,
+        data: { data: serializedRecords },
         ...buildAjaxOptions(adapterOptions, useExtensionMimeType),
       });
       const responseData = response.data;
@@ -111,14 +84,11 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
         records.every((record) => record.isDeleted)
       );
 
-      const serializedRecords = records
-        .map((record) => record.serialize({ includeId: true }))
-        .map((payload) => payload.data)
-        .map((record) => {
-          delete record.attributes;
+      const serializedRecords = serialize(records, { includeId: true }).map((record) => {
+        delete record.attributes;
 
-          return record;
-        });
+        return record;
+      });
 
       validateRecordTypesMatch(serializedRecords);
 
@@ -126,16 +96,13 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
       const adapter = this.adapterFor(modelName);
 
       const url = adapter.urlForCreateRecord(modelName);
-      const payload = {
-        data: serializedRecords,
-      };
 
       records.forEach((record) => {
         record._internalModel.adapterWillCommit();
       });
 
       await adapter.ajax(url, 'DELETE', {
-        data: payload,
+        data: { data: serializedRecords },
         ...buildAjaxOptions(adapterOptions, useExtensionMimeType),
       });
 
