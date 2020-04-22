@@ -1032,11 +1032,11 @@
     eslint-plugin-prettier "^3.1.2"
 
 "@movable/prettier-config@^0.3.0", "@movable/prettier-config@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@movable/prettier-config/-/prettier-config-0.3.1.tgz#b637edc9bf13a7bbe3b0bc2d1672baeb177862ad"
-  integrity sha512-damTbNIMk1Af4cx+MPL/mdvHjR1V/MucEQZEiqZkVokTH3Oh090sXJ9kJPg6pdyxWVmyLD7Ng9GUKeuHb6prkw==
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@movable/prettier-config/-/prettier-config-0.3.2.tgz#4630c4328c51405a68e803795ba0a04578eba93f"
+  integrity sha512-OIyD1Fon7+w9Z6QOOhkG7oZJ1qKNRpZrfNGSNWIabwJSkF4lbYVx+ABfG8IoVN/Xs3itIT0iiNnCx3cZPQSdwg==
   dependencies:
-    prettier "^2.0.1"
+    prettier "^2.0.5"
 
 "@nodelib/fs.scandir@2.1.3":
   version "2.1.3"
@@ -8702,10 +8702,10 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^2.0.1:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.0.2.tgz#1ba8f3eb92231e769b7fcd7cb73ae1b6b74ade08"
-  integrity sha512-5xJQIPT8BraI7ZnaDwSbu5zLrB6vvi8hVV58yHQ+QK64qrY40dULy0HSRlQ2/2IdzeBpjhDkqdcFBnFeDEMVdg==
+prettier@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.0.5.tgz#d6d56282455243f2f92cc1716692c08aa31522d4"
+  integrity sha512-7PtVymN48hGcO4fGjybyBSIWDsLU4H4XlvOHfq91pz9kkGlonzwTfYkaIEwiRg/dAJF9YlbsduBAgtYLi+8cFg==
 
 printf@^0.5.1:
   version "0.5.3"
