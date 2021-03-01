@@ -47,7 +47,7 @@
     "loader.js": "^4.7.0",
     "lodash-es": "^4.17.15",
     "pretender": "^3.3.1",
-    "standard-version": "^8.0.1",
+    "standard-version": "^9.1.1",
     "testdouble": "^3.13.1",
     "testdouble-qunit": "^2.1.1"
   },
