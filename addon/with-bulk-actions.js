@@ -66,6 +66,46 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
       return records;
     }
 
+    async bulkUpdate(records, { adapterOptions = {} } = {}) {
+      debugger
+      if (isEmpty(records)) {
+        return [];
+      }
+
+      assert(
+        'All records must have an id',
+        records.every((record) => record.id)
+      );
+
+      const serializedRecords = serialize(records, { includeId: true });
+
+      validateRecordTypesMatch(serializedRecords);
+
+      const modelName = getModelName(records);
+      const adapter = this.adapterFor(modelName);
+
+      const url = adapter.urlForCreateRecord(modelName);
+
+      records.forEach((record) => {
+        record._internalModel.adapterWillCommit();
+      });
+
+      const response = await adapter.ajax(url, 'PATCH', {
+        data: { data: serializedRecords },
+        ...buildAjaxOptions(adapterOptions, useExtensionMimeType),
+      });
+      const responseData = response.data;
+
+      
+      records.forEach((record, index) => {
+        const { data } = this.normalize(modelName, responseData[index]);
+
+        this.didSaveRecord(record._internalModel, { data }, 'updateRecord');
+      });
+
+      return records;
+    }
+
     async bulkDestroy(records, options) {
       records.forEach((record) => {
         record.deleteRecord();
