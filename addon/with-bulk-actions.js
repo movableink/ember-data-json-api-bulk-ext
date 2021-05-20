@@ -67,7 +67,6 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
     }
 
     async bulkUpdate(records, { adapterOptions = {} } = {}) {
-      debugger
       if (isEmpty(records)) {
         return [];
       }
