@@ -9,7 +9,6 @@ import { payload as payloadMatches } from '../../matchers/pretender';
 @withBulkActions()
 class StoreWithoutHeaderOptions extends Store {}
 
-
 function setupStore(hooks) {
   hooks.beforeEach(function () {
     this.owner.unregister('service:store');
@@ -44,7 +43,7 @@ module('Unit | withBulkActions | bulkUpdate', function (hooks) {
   test('it does not interfere with normal update', async function (assert) {
     td.when(
       this.postsPatchHandler(
-        payloadMatches({ data: { id: "1", attributes: { title: 'First Post' }, type: 'posts'} })
+        payloadMatches({ data: { id: '1', attributes: { title: 'First Post' }, type: 'posts' } })
       )
     ).thenReturn([
       200,
@@ -72,8 +71,8 @@ module('Unit | withBulkActions | bulkUpdate', function (hooks) {
       this.postsPatchHandler(
         payloadMatches({
           data: [
-            { id: "1", attributes: { title: 'First Post' }, type: 'posts' },
-            { id: "2", attributes: { title: 'Second Post' }, type: 'posts' },
+            { id: '1', attributes: { title: 'First Post' }, type: 'posts' },
+            { id: '2', attributes: { title: 'Second Post' }, type: 'posts' },
           ],
         })
       )
@@ -84,14 +83,14 @@ module('Unit | withBulkActions | bulkUpdate', function (hooks) {
         data: [
           {
             type: 'posts',
-            id: "1",
+            id: '1',
             attributes: {
               title: 'First Post',
             },
           },
           {
             type: 'posts',
-            id: "2",
+            id: '2',
             attributes: {
               title: 'Second Post',
             },
@@ -106,8 +105,11 @@ module('Unit | withBulkActions | bulkUpdate', function (hooks) {
     const [first, second] = await this.store.bulkUpdate([this.firstPost, this.secondPost]);
 
     assert.equal(first.title, this.firstPost.title, 'The first record is updated with new title');
-    assert.equal(second.title, this.secondPost.title, 'The second record is updated with new title');
-    
+    assert.equal(
+      second.title,
+      this.secondPost.title,
+      'The second record is updated with new title'
+    );
 
     assert.equal(
       this.store.peekAll('post').length,

@@ -95,7 +95,6 @@ function extendStore(StoreClass, { useExtensionMimeType = false } = {}) {
       });
       const responseData = response.data;
 
-      
       records.forEach((record, index) => {
         const { data } = this.normalize(modelName, responseData[index]);
 
