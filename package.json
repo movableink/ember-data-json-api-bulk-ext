@@ -15,7 +15,8 @@
   "scripts": {
     "lint:js": "eslint .",
     "test": "ember test",
-    "release": "standard-version"
+    "release": "standard-version",
+    "prepare": "husky install"
   },
   "dependencies": {
     "ember-cli-babel": "^7.18.0"
@@ -44,12 +45,23 @@
     "eslint": "^6.8.0",
     "eslint-plugin-ember": "^10.2.0",
     "eslint-plugin-node": "^11.0.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
     "loader.js": "^4.7.0",
     "lodash-es": "^4.17.15",
     "pretender": "^3.3.1",
     "standard-version": "^9.1.1",
     "testdouble": "^3.13.1",
     "testdouble-qunit": "^3.0.0"
+  },
+  "lint-staged": {
+    "*.js": "eslint --fix",
+    "*.{json,md,yml}": "prettier --write"
+  },
+  "standard-version": {
+    "scripts": {
+      "postchangelog": "prettier --write CHANGELOG.md"
+    }
   },
   "engines": {
     "node": "10.* || >= 12"
