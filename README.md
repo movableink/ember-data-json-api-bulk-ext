@@ -8,7 +8,7 @@ Decorator to add support to Ember Data for the [JSON:API Bulk Extension](https:/
 
 - Ember.js v3.24 or above
 - Ember CLI v2.13 or above
-- Node.js v10 or above
+- Node.js v12 or above
 
 ## Installation
 

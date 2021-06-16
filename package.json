@@ -63,9 +63,6 @@
       "postchangelog": "prettier --write CHANGELOG.md"
     }
   },
-  "engines": {
-    "node": "10.* || >= 12"
-  },
   "ember": {
     "edition": "octane"
   },
